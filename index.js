@@ -38,7 +38,7 @@ run().catch(console.dir);
 
 // initial get
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello World Server!");
 });
 // Basic url
 app.listen(port, () => {
