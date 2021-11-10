@@ -38,7 +38,7 @@ run().catch(console.dir);
 
 // initial get
 app.get("/", (req, res) => {
-  res.send("Hello World Server!");
+  res.send("Hello World Server Successfully Connected!");
 });
 // Basic url
 app.listen(port, () => {
