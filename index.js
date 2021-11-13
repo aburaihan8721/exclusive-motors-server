@@ -52,8 +52,6 @@ async function run() {
       res.json(result);
     });
 
-
-    
     // ==================GET METHODS===========================
     // get all cars data
     app.get("/cars", async (req, res) => {
@@ -79,13 +77,10 @@ async function run() {
 
     // get all address
     app.get("/address", async (req, res) => {
-      const cursor = reviewCollection.find({});
+      const cursor = addressCollection.find({});
       const address = await cursor.toArray();
       res.send(address);
     });
-
-
-
   } finally {
     // await client.close();
   }
