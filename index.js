@@ -75,6 +75,13 @@ async function run() {
       res.send(reviews);
     });
 
+    // get all booking data
+    app.get("/bookings", async (req, res) => {
+      const cursor = bookingCollection.find({});
+      const bookings = await cursor.toArray();
+      res.send(bookings);
+    });
+
     // get specific user's bookings
     app.get("/bookings", async (req, res) => {
       let query = {};
@@ -106,6 +113,15 @@ async function run() {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const result = await bookingCollection.deleteOne(query);
+      console.log(result);
+      res.json(result);
+    });
+
+    // delete cars
+    app.delete("/cars/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await carsCollection.deleteOne(query);
       console.log(result);
       res.json(result);
     });
