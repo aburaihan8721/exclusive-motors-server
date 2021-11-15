@@ -25,7 +25,7 @@ async function run() {
     // collection
     const carsCollection = database.collection("carsCollection");
     const reviewCollection = database.collection("reviewCollection");
-    const addressCollection = database.collection("addressCollection");
+    const bookingCollection = database.collection("bookingCollection");
 
     // ==================POST METHODS===========================
     // add cars data
@@ -44,10 +44,10 @@ async function run() {
       res.json(result);
     });
 
-    // add address data
-    app.post("/address", async (req, res) => {
-      const singleAddress = req.body;
-      const result = await addressCollection.insertOne(singleAddress);
+    // add booking data
+    app.post("/bookings", async (req, res) => {
+      const booking = req.body;
+      const result = await bookingCollection.insertOne(booking);
       console.log(result);
       res.json(result);
     });
@@ -75,11 +75,49 @@ async function run() {
       res.send(reviews);
     });
 
-    // get all address
-    app.get("/address", async (req, res) => {
-      const cursor = addressCollection.find({});
-      const address = await cursor.toArray();
-      res.send(address);
+    // get specific user's bookings
+    app.get("/bookings", async (req, res) => {
+      let query = {};
+      const email = req.query.email;
+      if (email) {
+        query = { email: email };
+      }
+      const cursor = bookingCollection.find(query);
+      const bookings = await cursor.toArray();
+      res.send(bookings);
+    });
+
+    // get admin user
+    app.get("/bookings/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const adminUser = await bookingCollection.findOne(query);
+      let isAdmin = false;
+      if (adminUser?.role === "admin") {
+        isAdmin = true;
+      }
+      res.json({ admin: isAdmin });
+    });
+
+    // ==================DELETE METHODS===========================
+
+    // delete my orders/booking
+    app.delete("/bookings/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await bookingCollection.deleteOne(query);
+      console.log(result);
+      res.json(result);
+    });
+
+    // ==================PUT METHODS===========================
+    app.put("/bookings/admin", async (req, res) => {
+      const booking = req.body;
+      console.log("put", booking);
+      const filter = { email: booking.email };
+      const updateDoc = { $set: { role: "admin" } };
+      const result = await bookingCollection.updateOne(filter, updateDoc);
+      res.json(result);
     });
   } finally {
     // await client.close();
